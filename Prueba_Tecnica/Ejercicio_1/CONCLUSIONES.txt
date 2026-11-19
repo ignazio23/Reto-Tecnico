@@ -1,0 +1,128 @@
+Conclusiones del Ejercicio 1 de la Prueba Técnica
+====================================================
+
+1. Caso solicitado del Ejercicio 1 -
+
+Caso automatizado: "Flujo E2E de compra con Guest Checkout" (etiqueta @ejercicio1).
+
+  Requisito del ejercicio                Cómo se cubre
+  -------------------------------------  ---------------------------------------------------
+  Agregar dos productos al carrito       iPhone y MacBook desde la portada; se espera la
+                                         alerta de éxito de cada uno.
+  Visualizar el carrito                  Entra por el enlace del encabezado y verifica la URL
+                                         y que contiene exactamente esos dos productos.
+  Guest Checkout                         Elige "Guest Checkout", completa los datos de
+                                         facturación, deja el envío por defecto (Flat Shipping
+                                         Rate) y paga contra entrega (Cash On Delivery).
+  Confirmación "Your order has been      Presiona "Confirm Order", espera la redirección a la
+  placed!"                               pantalla de éxito y verifica el título.
+
+Resultado de la ejecución de verificación: caso aprobado (SUCCESS), alrededor de 30 segundos.
+El reporte queda en Reporte_Final\index.html.
+
+----------------------------------------------------------------------------------------
+
+2. Hallazgos del sitio -
+
+ a) De los cuatro productos de la portada, "Apple Cinema 30"" y "Canon EOS 5D" exigen elegir
+    opciones obligatorias antes de agregarse; iPhone y MacBook se agregan directamente desde el
+    listado. Se eligieron estos dos para mantener el caso estable y centrado en el flujo de compra.
+
+ b) El checkout es un acordeón de 6 pasos (Checkout Options, Account & Billing Details,
+    Delivery Details, Delivery Method, Payment Method y Confirm Order). Como invitado, el paso
+    de "Delivery Details" no requiere acción porque la dirección de envío es la de facturación.
+
+ c) La lista "Region / State" se carga por AJAX después de elegir el país, por lo que antes de
+    seleccionar la región se utiliza una espera explícita hasta que la opción esté disponible.
+
+ d) En las páginas de cuenta (Register y Gift Certificate) el encabezado <h1> muestra "Account"
+    y no el título real de la página. El título correcto está en el título de la pestaña
+    (por ejemplo "Your Account Has Been Created!"), por eso el caso de registro valida la URL
+    y el título de la pestaña y no el encabezado.
+
+ e) El formulario de registro no usa captcha y valida los campos obligatorios. OpenCart no admite
+    dos cuentas con el mismo e-mail (comportamiento estándar de la plataforma), por lo que el
+    caso de registro genera un e-mail distinto en cada ejecución.
+
+----------------------------------------------------------------------------------------
+
+3. Hallazgos de la automatización (problemas encontrados y cómo se resolvieron) -
+
+ a) Sincronización en la confirmación final. La primera versión leía el título de la pantalla final inmediatamente
+    después de presionar "Confirm Order" y obtenía "Checkout": la tienda hace primero una llamada AJAX y 
+    después redirige, y el título de la pantalla anterior también existe. 
+    Solución: esperar a que la URL contenga "checkout/success" antes de validar.
+
+ b) Codificación de caracteres. Compilar con la codificación por defecto de Windows (1252)
+    corrompía los textos con tildes de los pasos en español y Cucumber los marcaba como no definidos. 
+    Solución: forzar UTF-8 en la compilación y en la ejecución de las pruebas.
+
+ c) Reporte sin estilos. Serenity busca los recursos del reporte (CSS y JavaScript) a partir de la ruta del jar
+    y falla en silencio cuando la ruta contiene espacios; el reporte se veía como texto plano y sin gráficos. 
+    Solución: tarea de Gradle (copiarRecursosDelReporte) que copia esos recursos de forma independiente de la ruta. 
+    Se verificó que las 31 referencias del index.html existen en disco.
+
+ d) Pérdida de resultados en la primera ejecución de un clon nuevo. Si Reporte_Final se declara como carpeta a
+    borrar en la tarea "clean", la tarea de reportes de Serenity la vacía en la primera ejecución del proyecto
+    (sin historial de Gradle), eliminando los resultados antes de generar el reporte: el reporte salía con 0 casos. 
+    Solución: la limpieza de Reporte_Final queda a cargo de la tarea clearReports del plugin de Serenity. 
+    Se verificó con un clon limpio.
+
+ e) Recursos del equipo. La ejecución necesita memoria libre (Java más Chrome). En un equipo con la memoria virtual
+    agotada, Windows rechazó el proceso de pruebas (error 1455). 
+    Se documenta en el readme.txt cómo resolverlo.
+
+----------------------------------------------------------------------------------------
+
+4. El por qué de los casos EXTRA -
+
+Los dos casos adicionales no forman parte de lo pedido por el ejercicio. Se agregaron por
+estos motivos:
+
+ - Demostrar que la solución es reutilizable y escalable. El caso solicitado se construyó con
+   el patrón Screenplay, separando localizadores (ui), acciones de negocio (tasks), datos
+   (models) y pasos (stepdefinitions). Los extras reutilizan piezas existentes (apertura de la tienda,
+   visualización del carrito, esperas) y se sumaron sin modificar el caso principal.
+
+ - Cubrir flujos de naturaleza distinta al checkout. Ambos son formularios con reglas propias:
+     *EXTRA_Creacion_de_Gift_Certificate: selección de tema, monto, aceptación de condiciones y efecto sobre el 
+       carrito, sin llegar a crear un pedido.
+     *EXTRA_Registro_de_usuario: navegación por el menú "My Account", validaciones de formulario,
+       política de privacidad y dato único por ejecución (e-mail con la hora actual) para poder repetir el caso.
+
+ - Verificar el mecanismo de ejecución selectiva. Cada caso lleva etiquetas de Cucumber y build.gradle las traduce
+   al parámetro -Pcasos. Así, la ejecución por defecto (.\gradlew.bat) corre únicamente lo solicitado por el ejercicio,
+   y los extras solo se ejecutan si se activan expresamente (ver en el readme, sección 4).
+
+ - Mantener los extras fuera de la ejecución por defecto evita generar datos innecesarios en el sitio público
+   (por ejemplo, cuentas nuevas) y no altera el resultado del caso evaluado.
+
+Qué valida cada extra:
+ - EXTRA_Creacion_de_Gift_Certificate: mensaje "Thank you for purchasing a gift certificate!",
+   URL account/voucher/success y que el carrito muestre el Gift Certificate con su importe.
+
+ - EXTRA_Registro_de_usuario: URL account/success y título "Your Account Has Been Created!".
+
+----------------------------------------------------------------------------------------
+
+5. Limitaciones y alcance -
+
+ - Se automatiza el camino feliz de cada flujo; no se cubren validaciones negativas.
+ - La prueba depende de la disponibilidad del sitio demo, de sus textos en inglés y de que los productos usados
+   sigan en la portada.
+ - Cada ejecución crea datos reales en el sitio público (un pedido; y una cuenta si se ejecuta el registro).
+   Los datos son ficticios.
+ - Verificado en Windows 11 Pro con JDK 17 y Google Chrome. 
+ - Linux y macOS no fueron verificados.
+
+----------------------------------------------------------------------------------------
+
+6. Conclusión - 
+
+El flujo solicitado (dos productos, carrito, Guest Checkout y confirmación "Your order has
+been placed!") queda completo y se automatiza con Serenity BDD, se ejecuta de punta a punta con un solo
+comando (.\gradlew.bat), generando un reporte con evidencias en la carpeta destino: Reporte_Final. 
+
+El proyecto está pensado para reproducirse con solo JDK 17 y Chrome, gracias al Gradle Wrapper, a la limpieza
+automática de ejecuciones previas y a la copia de los recursos del reporte. Los problemas encontrados durante el
+trabajo (sincronización, codificación, reporte y limpieza) se resolvieron y quedaron documentados.

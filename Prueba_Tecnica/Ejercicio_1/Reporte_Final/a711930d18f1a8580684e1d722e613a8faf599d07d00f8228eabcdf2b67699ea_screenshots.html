@@ -1,0 +1,448 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Screenshots</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff"><link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.css">
+<!-- JQuery -->
+<script type="text/javascript" src="scripts/jquery-3.7.1.min.js"></script><!-- Required Stylesheets -->
+<link href="bootstrap-treeview/dist/bootstrap-treeview.min.css" rel="stylesheet">
+
+<!-- Required Javascript -->
+<script src="bootstrap-treeview/dist/bootstrap-treeview.min.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/2.3.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/2.3.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/2.3.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+<link rel="stylesheet" href="css/core.css"/>
+<link rel="stylesheet" href="css/link.css"/>
+<link type="text/css" media="screen" href="css/screen.css" rel="Stylesheet"/>
+<!--CHART.JS-->
+<script src="chartjs/chart.js"></script>
+<script src="chartjs/chartjs-plugin-datalabels@2.0.0.min.js"></script>
+<script src="chartjs/patternomaly.min.js"></script>
+<script>
+    // Register the plugin to all charts:
+    Chart.register(ChartDataLabels);
+</script>
+
+    <!-- Swiper.js local styles and script -->
+    <link rel="stylesheet" href="swiper/swiper-bundle.min.css" />
+    <script src="swiper/swiper-bundle.min.js"></script>
+
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const startIndex = parseInt(urlParams.get("screenshot")) || 0;
+
+            new Swiper('.swiper', {
+                initialSlide: startIndex,
+                effect: 'fade',
+                speed: 200,
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                    renderBullet: function (index, className) {
+                        return '<span class="' + className + '">' + (index + 1) + "</span>";
+                    },
+                    dynamicBullets: true,
+                    dynamicMainBullets: 3  // Shows 3 main bullets + 2 smaller ones on sides
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev'
+                },
+                keyboard: {
+                    enabled: true,
+                    onlyInViewport: true
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .swiper {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        .swiper-slide img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .swiper-slide img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .swiper-pagination-bullet {
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            color: #000;
+            opacity: 1;
+            background: lightgrey;
+        }
+
+        .swiper-pagination-bullet-active {
+            color: #fff;
+            background: #007aff;
+        }
+    </style>
+</head>
+
+<body>
+<div id="topheader">
+    <div id="topbanner">
+        <div id="logo"><a href="index.html"><img src="images/serenity-logo.png" border="0"/></a></div>
+        <div id="projectname-banner" style="float:right">
+            <span class="projectname">
+                <span class="projecttitle">Test Tecnico - OpenCart E2E</span>
+                <span class="projectsubtitle"></span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="middlecontent">
+    <div id="contenttop">
+        <div class="middlebg">
+            <span class="breadcrumbs">
+                <a href="index.html">Home</a>
+                > <span class="truncate-40"><a
+                    href="5c6b6b50668c3df6a3452ac5ec05cae2b1f93ad7dabf5c0f221dc82ad9e2072a.html">Compra Invitado</a></span>
+                > <span class="truncate-60"><a
+                    href="a711930d18f1a8580684e1d722e613a8faf599d07d00f8228eabcdf2b67699ea.html">Flujo E2E de compra con Guest Checkout </a></span>
+                > Screenshots
+            </span>
+        </div>
+        <div class="rightbg"></div>
+    </div>
+
+    <div class="clr"></div>
+
+    <!--/* starts second table*/-->
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#"><i class="bi bi-journal-check"></i> Overall Test Results</a>
+        </li>
+        <li >
+            <a href="capabilities.html"><i class="bi bi-journal-text"></i> Requirements</a>
+        </li>
+        <li >
+            <a href="7ea0a5e2d679b9deeda9910ae4a9bcd3a281e0d908303a9e16e486103e98880c.html"><i class="bi bi-chat-text"></i> Capabilities</a>
+        </li>
+        <li >
+            <a href="576946480b52ad056d6f5bddf874399c83582ecf90963cc074a14c70580e7d9f.html"><i class="bi bi-chat-text"></i> Features</a>
+        </li>
+    </ul>
+    <span class="date-and-time"><a href="build-info.html"><i class="bi bi-info-circle"></i></a> Report generated 19-11-2026 12:34</span>
+    <br style="clear:left"/>
+</div>
+
+    <div class="clr"></div>
+
+
+    <div id="contentbody">
+        <div class="titlebar">
+            <div class="story-title">
+                <table class="outcome-header">
+                    <tr>
+                        <td>
+                            <div>
+                                <h3 class="discreet-story-header">
+                                    <i class="fs-2 bi bi-chat-left-quote large-icon"></i>
+                                    <span class="story-header-title">Compra Como Invitado En Opencart </span>
+                                    <span class="badge tag-badge" style="">Feature</span>
+                                </h3>
+
+                                <div class="discreet-requirement-narrative-title">
+                                Como cliente sin cuenta<br />
+Quiero comprar productos como invitado<br />
+Para recibir mi pedido sin registrarme
+                                </div>
+                            </div>
+
+                        </td>
+                        <td valign="top" align="right">
+                            <p class="tag">
+                                <span class="badge tag-badge" style="background:default;"
+                                    <i class="bi bi-tag-fill"></i>&nbsp;<a class="tagLink" style="background:default;" href="34658a1663fcf042bd7acb3325affbe4e647c8acd84d0228be2f52e1381e61b9.html">10 To 30 Seconds
+                                        (Duration)
+                                </a>
+                                </span>
+                            </p>
+                            <p class="tag">
+                                <span class="badge tag-badge" style="background:default;"
+                                    <i class="bi bi-tag-fill"></i>&nbsp;<a class="tagLink" style="background:default;" href="bbadce9d5ecaf2daada3bacb22a00dcf6fbd5a2df72fc32e2688bb2b60707239.html">Ejercicio1
+                                </a>
+                                </span>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="story-title">
+                <table class="outcome-header">
+                    <tr>
+                        <td colspan="2" class="test-title-bar">
+                            <span class="outcome-icon"><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon fa-2x' title='SUCCESS'></i></a></span>
+                            <span class="test-case-title">
+                                <span class="success-color">Flujo E2E de compra con Guest Checkout
+                                    <span class="related-issue-title"></span>
+                                </span>
+                            </span>
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="clr"></div>
+
+
+    <div id="beforetable"></div>
+    <div id="contenttilttle">
+    <!-- Swiper Carousel -->
+    <div class="swiper">
+        <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="bc828cb1291083fd9d62703df8a903587ee58428e482d0a8db2f1dee5f152c0a.png" title=" Dado que el cliente abre la tienda OpenCart" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="bc828cb1291083fd9d62703df8a903587ee58428e482d0a8db2f1dee5f152c0a.png" title=" Cliente abre la tienda OpenCart" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="bc828cb1291083fd9d62703df8a903587ee58428e482d0a8db2f1dee5f152c0a.png" title=" Cliente opens the browser at http://opencart.abstracta.us/" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="bc828cb1291083fd9d62703df8a903587ee58428e482d0a8db2f1dee5f152c0a.png" title=" Cliente abre la tienda OpenCart (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="bc828cb1291083fd9d62703df8a903587ee58428e482d0a8db2f1dee5f152c0a.png" title=" Dado que el cliente abre la tienda OpenCart (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="4be1c65a3f93db49e7c31fdaff675d13af4287b4f200d8d6c2b1f30d1f53a0fd.png" title=" Cuando agrega al carrito los productos &quot;iPhone&quot; y &quot;MacBook&quot;" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="4be1c65a3f93db49e7c31fdaff675d13af4287b4f200d8d6c2b1f30d1f53a0fd.png" title=" Cliente agrega 'iPhone' al carrito" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="4be1c65a3f93db49e7c31fdaff675d13af4287b4f200d8d6c2b1f30d1f53a0fd.png" title=" Cliente clicks on bot&oacute;n 'Add to Cart' de iPhone" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="dc8f1930461242e3bc7277229ec147d086a3049d5b83feea919d4780126b32d1.png" title=" Cliente agrega 'iPhone' al carrito (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="23ead003c01ca6230f137312e131882add3976cd149b19884283a4ce88f91d77.png" title=" Cliente agrega 'MacBook' al carrito" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="23ead003c01ca6230f137312e131882add3976cd149b19884283a4ce88f91d77.png" title=" Cliente clicks on bot&oacute;n 'Add to Cart' de MacBook" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="c0f47ffa5648f1956ba228bcea3e4187f027944866ebba497ed73e87699a2924.png" title=" Cliente agrega 'MacBook' al carrito (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="c0f47ffa5648f1956ba228bcea3e4187f027944866ebba497ed73e87699a2924.png" title=" Cuando agrega al carrito los productos &quot;iPhone&quot; y &quot;MacBook&quot; (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="3b9ec94d4c38de8765e265b0e7b08edef412779d07d00c857f191aae67c1e07c.png" title=" Y visualiza el carrito de compras" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="3b9ec94d4c38de8765e265b0e7b08edef412779d07d00c857f191aae67c1e07c.png" title=" Cliente visualiza el carrito de compras" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="3b9ec94d4c38de8765e265b0e7b08edef412779d07d00c857f191aae67c1e07c.png" title=" Cliente clicks on enlace 'Shopping Cart' del encabezado" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="3b9ec94d4c38de8765e265b0e7b08edef412779d07d00c857f191aae67c1e07c.png" title=" Cliente visualiza el carrito de compras (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="3b9ec94d4c38de8765e265b0e7b08edef412779d07d00c857f191aae67c1e07c.png" title=" Y visualiza el carrito de compras (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="3b9ec94d4c38de8765e265b0e7b08edef412779d07d00c857f191aae67c1e07c.png" title=" Entonces el carrito muestra los productos &quot;iPhone&quot; y &quot;MacBook&quot;" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="3b9ec94d4c38de8765e265b0e7b08edef412779d07d00c857f191aae67c1e07c.png" title=" Cliente should see a value that contains: &lt;[route=checkout/cart]&gt;" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="3b9ec94d4c38de8765e265b0e7b08edef412779d07d00c857f191aae67c1e07c.png" title=" Cliente should see a value that contains exactly in any order: &lt;[iPhone, MacBook]&gt;" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="3b9ec94d4c38de8765e265b0e7b08edef412779d07d00c857f191aae67c1e07c.png" title=" Entonces el carrito muestra los productos &quot;iPhone&quot; y &quot;MacBook&quot; (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="11996dadd707678635ebf1238cceef02f265170638c8373b13c3a76d09a5a245.png" title=" Cuando completa el checkout como invitado con sus datos de facturaci&oacute;n" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="11996dadd707678635ebf1238cceef02f265170638c8373b13c3a76d09a5a245.png" title=" Cliente presiona 'Checkout' en el carrito" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="11996dadd707678635ebf1238cceef02f265170638c8373b13c3a76d09a5a245.png" title=" Cliente clicks on bot&oacute;n 'Checkout' del carrito" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="c661e877b445a1b32a1c4a788db81b0bca29064c4214add5e452095892701e46.png" title=" Cliente presiona 'Checkout' en el carrito (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="157c8c9afc4e6339bfde3c222d80c1de2409fab64f38ee4203fdd771ada0407c.png" title=" Cliente elige 'Guest Checkout'" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="157c8c9afc4e6339bfde3c222d80c1de2409fab64f38ee4203fdd771ada0407c.png" title=" Cliente clicks on opci&oacute;n 'Guest Checkout'" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="e850a298cb5aa087556976f4fab773348262cae0a57953247d79becfc5697a80.png" title=" Cliente clicks on bot&oacute;n 'Continue' del paso 1" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="3559f47cef22101e0d16f0c415af7394be5e0b0b65f27967c79e95742ef937ae.png" title=" Cliente elige 'Guest Checkout' (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="f78fcda7d289d8c3ffe6df48a2d12cbc95e449a23a69fb583018990c439b7b37.png" title=" Cliente completa sus datos de facturaci&oacute;n" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="f78fcda7d289d8c3ffe6df48a2d12cbc95e449a23a69fb583018990c439b7b37.png" title=" Cliente enters 'Federico' into campo First Name" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="33fd12844a7ce0b69f7a528acbdaee6227155d79c6d5ba983780f33a8ca2d09e.png" title=" Cliente enters 'Valverde' into campo Last Name" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="703d0e7b33104161cd9112d96ffd88eed0b412eac0210537ebdc7f9bfcf199bf.png" title=" Cliente enters 'federico.valverde@example.com' into campo E-Mail" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="5cd92bd4d95ae75dea29e25db18e1b82b5f38c3c9706702374eb319e50301339.png" title=" Cliente enters '5981234567' into campo Telephone" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="60c2e50f8d8c27f38a69b81f52babd51d75e3cfc986efe6b0b23e0915b868b04.png" title=" Cliente enters 'Calle Pruebas 123' into campo Address 1" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="a1f3783eb403e4aad744d6b905119919a1a6a8b0d775828876177738ca1f13fe.png" title=" Cliente enters 'Maldonado' into campo City" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="1c8d33afe7fb211ab3e38e2a5c4378c530f0f460e8fdb049cf2be0509d7b484b.png" title=" Cliente enters '20200' into campo Post Code" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="72e33f11dfa22901cb690dd054c81786ab24d41509eccef6ff9e05aa45f2d35c.png" title=" Cliente selects Uruguay on lista Country" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="3dcc2abef180fb2e8fb795d24fae2a7fe47c17e14def763805d6813c7609e37b.png" title=" Cliente selects Maldonado on lista Region / State" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="e33b0b07c7a5d5836c59f4512e3f25a7155a0a8e39522ec5225c396e0180b23b.png" title=" Cliente clicks on bot&oacute;n 'Continue' del paso 2" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="2ff7b90ac47daf0cae730cc531cb19a8ce36f22c8061056121e4df4e6ea555a7.png" title=" Cliente completa sus datos de facturaci&oacute;n (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="cacae7d6f9f29c94b811456335df6df813121b00ee822bd74434d913b62a80ee.png" title=" Cliente contin&uacute;a con el m&eacute;todo de env&iacute;o por defecto" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="cacae7d6f9f29c94b811456335df6df813121b00ee822bd74434d913b62a80ee.png" title=" Cliente clicks on bot&oacute;n 'Continue' del paso 4" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="afdfaaa50f3526bd5bce5c4147e71dbbdf9340696a9f86697821b272ca74070f.png" title=" Cliente contin&uacute;a con el m&eacute;todo de env&iacute;o por defecto (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="632874d2507de512beb676587359b6e5c6bf4da2969c18ae32c9c90c6f22a93e.png" title=" Cliente elige pago contra entrega y acepta los t&eacute;rminos" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="632874d2507de512beb676587359b6e5c6bf4da2969c18ae32c9c90c6f22a93e.png" title=" Cliente clicks on opci&oacute;n 'Cash On Delivery'" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="df08377123317224df8cc1f20bb4215181e3a8b80580f7ac79c7af49881e57da.png" title=" Cliente clicks on casilla de t&eacute;rminos y condiciones" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="8c3a0a64f254fdf56a67b3b0aacb1ff18a8a8519c2becbb8be5a91c34fde99c6.png" title=" Cliente clicks on bot&oacute;n 'Continue' del paso 5" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="0ba831514bcd81e1335af13a152e4f538a0f4d55918897c53fa952e16ec29a73.png" title=" Cliente elige pago contra entrega y acepta los t&eacute;rminos (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="0ba831514bcd81e1335af13a152e4f538a0f4d55918897c53fa952e16ec29a73.png" title=" Cuando completa el checkout como invitado con sus datos de facturaci&oacute;n (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="7cfe709fc161b4c1dd6a8e11d13fc8a41ba2a1813e7dfac32ad08aaa8cc6c014.png" title=" Y finaliza la compra" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="7cfe709fc161b4c1dd6a8e11d13fc8a41ba2a1813e7dfac32ad08aaa8cc6c014.png" title=" Cliente confirma la orden" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="7cfe709fc161b4c1dd6a8e11d13fc8a41ba2a1813e7dfac32ad08aaa8cc6c014.png" title=" Cliente clicks on bot&oacute;n 'Confirm Order'" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="1279bc76472ab8623ccda91efcfad2f8b922cb6ef396fb15142bef210825bcc4.png" title=" Cliente confirma la orden (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="1279bc76472ab8623ccda91efcfad2f8b922cb6ef396fb15142bef210825bcc4.png" title=" Y finaliza la compra (completed)" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="1279bc76472ab8623ccda91efcfad2f8b922cb6ef396fb15142bef210825bcc4.png" title=" Entonces ve el mensaje de confirmaci&oacute;n &quot;Your order has been placed!&quot;" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="1279bc76472ab8623ccda91efcfad2f8b922cb6ef396fb15142bef210825bcc4.png" title=" Cliente should see t&iacute;tulo de confirmaci&oacute;n de la compra with text value that is equal to: &lt;&quot;Your order has been placed!&quot;&gt;" width="0" />
+                </div>
+                <div class="swiper-slide">
+                    <img src="1279bc76472ab8623ccda91efcfad2f8b922cb6ef396fb15142bef210825bcc4.png" title=" Entonces ve el mensaje de confirmación "Your order has been placed!" (completed): <span class='success-color'>SUCCESS</span>" width="0" />
+                </div>
+        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-pagination"></div>
+    </div>
+</div>
+<div id="beforefooter"></div>
+<div id="bottomfooter">
+    <span class="version">Serenity BDD version 5.3.2</span>
+</div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+defaultTasks 'clean', 'test', 'aggregate'
+
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        maven { url = "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath "net.serenity-bdd:serenity-gradle-plugin:5.3.2"
+        classpath "net.serenity-bdd:serenity-single-page-report:5.3.2"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'net.serenity-bdd.serenity-gradle-plugin'
+
+ext {
+    serenity_version = '5.3.2'
+    junit_platform_launcher_version = "1.13.0"
+    cucumber_junit_platform_engine_version = "7.34.2"
+    junit_platform_suite_version = "6.0.3"
+    junit_jupiter_engine_version = "6.0.3"
+    junit_vintage_engine_version = "6.0.3"
+    logback_classic_version = "1.2.10"
+    assertj_core_version = "3.23.1"
+}
+
+configurations {
+    recursosDelReporte {
+        canBeConsumed = false
+        canBeResolved = true
+    }
+}
+
+dependencies {
+    testImplementation "net.serenity-bdd:serenity-core:${serenity_version}"
+    testImplementation "net.serenity-bdd:serenity-cucumber:${serenity_version}"
+    testImplementation "net.serenity-bdd:serenity-screenplay:${serenity_version}"
+    testImplementation "net.serenity-bdd:serenity-screenplay-webdriver:${serenity_version}"
+    testImplementation "net.serenity-bdd:serenity-ensure:${serenity_version}"
+    testImplementation "org.junit.platform:junit-platform-launcher:${junit_platform_launcher_version}"
+    testImplementation "io.cucumber:cucumber-junit-platform-engine:${cucumber_junit_platform_engine_version}"
+    testImplementation "org.junit.platform:junit-platform-suite:${junit_platform_suite_version}"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junit_jupiter_engine_version}"
+    testImplementation "org.junit.vintage:junit-vintage-engine:${junit_vintage_engine_version}"
+    testImplementation "ch.qos.logback:logback-classic:${logback_classic_version}"
+    testImplementation "org.assertj:assertj-core:${assertj_core_version}"
+
+    recursosDelReporte "net.serenity-bdd:serenity-report-resources:${serenity_version}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+
+// Casos a ejecutar (.\gradlew.bat)
+// Por defecto siempre se ejecuta SOLO el caso del Ejercicio 1.
+// Los casos EXTRA se activan con -Pcasos=<valor>. Profundizar en README
+def filtrosPorCaso = [
+        ejercicio: '@ejercicio1',
+        extras   : '@extra',
+        gift     : '@gift_certificate',
+        registro : '@registro',
+        todos    : '@ejercicio1 or @extra'
+]
+def casoSeleccionado = (project.findProperty('casos') ?: 'ejercicio').toString().trim().toLowerCase()
+if (!filtrosPorCaso.containsKey(casoSeleccionado)) {
+    throw new GradleException("Valor no valido para -Pcasos='${casoSeleccionado}'. " +
+            "Valores permitidos: ${filtrosPorCaso.keySet().join(', ')}")
+}
+
+test {
+    useJUnitPlatform()
+    defaultCharacterEncoding = 'UTF-8'
+    systemProperty 'cucumber.filter.tags', filtrosPorCaso[casoSeleccionado]
+    doFirst {
+        logger.lifecycle("Casos a ejecutar: ${casoSeleccionado} (filtro de tags: ${filtrosPorCaso[casoSeleccionado]})")
+    }
+}
+
+serenity {
+    reports = ["single-page-html"]
+    outputDirectory = "Reporte_Final"
+}
+
+
+// Limpieza automatica, lógica que borra los reportes y los datos de ejecuciones anteriores.
+clean {
+    delete 'target', 'history'
+    delete fileTree(dir: projectDir, include: 'hs_err_pid*.log')
+}
+
+tasks.register('copiarRecursosDelReporte', Copy) {
+    description = 'Copia el CSS/JS del reporte de Serenity a Reporte_Final'
+    from({
+        zipTree(configurations.recursosDelReporte.filter { it.name.contains('serenity-report-resources') }.singleFile)
+    }) {
+        include 'report-resources/**'
+        eachFile { it.path = it.path.replaceFirst('^report-resources/', '') }
+        includeEmptyDirs = false
+    }
+    into layout.projectDirectory.dir('Reporte_Final')
+}
+
+gradle.startParameter.continueOnFailure = true
+test.finalizedBy(aggregate, reports)
+aggregate.finalizedBy(tasks.named('copiarRecursosDelReporte'))
