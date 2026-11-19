@@ -1,0 +1,96 @@
+Conclusiones del Ejercicio 2 de la Prueba Técnica
+========================================================================================
+
+1. Casos del Ejercicio requerido -
+
+Escenario: "Crear, buscar, actualizar, buscar y eliminar un usuario" (usuario.feature).
+
+  Requisito del ejercicio               | Cómo se cubre
+  ------------------------------------- | ---------------------------------------------------
+  - Crear un usuario                    | POST /user con un body JSON completo. 
+                                        | Valida status 200, Content-Type JSON y que message devuelva el id enviado.
+                                        |
+  - Buscar el usuario creado            | GET /user/{username} 
+                                        | Valida status 200 y que la respuesta sea idéntica al body enviado.
+                                        |
+  - Actualizar nombre y correo          | PUT /user/{username} con el mismo usuario y firstName y email nuevos. 
+                                        | Valida status 200 y message con el id.
+                                        |
+  - Buscar el usuario actualizado       | GET /user/{username}
+                                        | Valida que firstName y email sean los nuevos, distintos de los iniciales,
+                                        | y el resto intacto.
+                                        |
+  - Eliminar el usuario                 | DELETE /user/{username}. 
+                                        | Valida status 200 y message con el username. Después un GET debe responder
+                                        | 404 con "User not found".
+
+Entradas, variables y salidas:
+ - Entradas: body JSON del usuario y username en la ruta. Se definen en el Background.
+ - Variables: sufijo (hora en milisegundos), idUsuario, username, nombre y correo iniciales y nuevos, usuario y 
+   usuarioActualizado. El sufijo hace únicos los datos de cada ejecución.
+ - Salidas: cada request y response (cuerpo, encabezados, status y tiempo) queda en Reporte_Final\petstore.usuario.html.
+
+Resultado de la ejecución de verificación: caso aprobado, alrededor de 10 segundos apróximadamente (9,7s).
+El reporte queda en Reporte_Final\karate-summary.html.
+
+----------------------------------------------------------------------------------------
+
+2. Hallazgos -
+
+ a) Contrato de respuesta poco descriptivo. POST y PUT responden 200 con type "unknown" y un message que lleva el id
+    como texto; DELETE devuelve en message el username. Se validan exactamente esos valores. Un contrato más claro
+    devolvería el recurso o un código 201 al crear.
+
+ b) Contraseña expuesta. GET /user/{username} devuelve el campo password en texto plano. En una API real sería un
+    defecto de seguridad.
+
+ c) Sin autenticación. Crear, actualizar y eliminar usuarios no requirió api_key ni token, por lo que cualquiera 
+    puede modificar o borrar el usuario de otra persona. Es esperable en una demo pública, pero se deja anotado.
+
+ d) Errores inconsistentes. Un GET de un usuario inexistente responde HTTP 404 con un JSON
+    {code:1, type:"error", message:"User not found"} (el code interno no coincide con el HTTP).
+    Un DELETE de un usuario ya eliminado responde 404 con el cuerpo vacío.
+
+ e) "Nombre" se interpreta como firstName. El username es el identificador de la URL y no se modifica durante el caso.
+
+----------------------------------------------------------------------------------------
+
+3. Hallazgos durante la Automatización y resolución -
+
+ a) Dependencias de Karate. Desde la versión 1.5 se publica con groupId io.karatelabs (las 1.4 usaban com.intuit.karate);
+    los paquetes Java siguen siendo com.intuit.karate.
+
+ b) Ubicación de los .feature. Karate recomienda dejarlos junto a las clases Java, por lo que build.gradle expone 
+    src\test\java como recursos de prueba (excluyendo los .java).
+
+ c) Datos únicos en un servicio compartido. Petstore lo usa mucha gente a la vez. Id, username y correos llevan la
+    hora en milisegundos para no chocar con otras ejecuciones, y el propio caso elimina lo que crea.
+
+ d) Un único escenario. Los cinco pasos dependen del estado que deja el anterior en el servidor; separarlos en
+    escenarios independientes los haría depender del orden de ejecución.
+
+----------------------------------------------------------------------------------------
+
+4. Limitaciones y alcance -
+
+ - Se automatiza el camino feliz; no se cubren validaciones negativas (body inválido, campos faltantes, actualizar o 
+   eliminar un usuario inexistente) ni pruebas de rendimiento.
+
+ - La prueba depende de la disponibilidad del servicio público de Petstore.
+
+ - Si la ejecución falla entre la creación y la eliminación, puede quedar un usuario residual (qa_user_<hora>), 
+   sin efecto sobre ejecuciones posteriores.
+
+ - Verificado en Windows 11 con JDK 17, Gradle 9.2.1 (wrapper) y Karate 1.5.2. Linux y macOS no fueron verificados.
+
+----------------------------------------------------------------------------------------
+
+5. Conclusión -
+
+El ciclo de vida solicitado (crear, buscar, actualizar, buscar y eliminar un usuario) quedó automatizado con Karate 
+y se ejecuta de punta a punta con un solo comando (.\gradlew.bat), generando un reporte con el detalle de cada 
+petición en Reporte_Final. 
+Cada paso valida status y contenido, y las acciones de escritura se comprueban siempre con una lectura posterior. 
+La ejecución se repitió varias veces seguidas sin obtener fallos en ninguna. 
+Como hallazgos del servicio quedaron la contraseña expuesta en texto plano, la ausencia de autenticación y las 
+respuestas de error inconsistentes; todo el trabajo está documentado en readme.txt para reproducirlo.

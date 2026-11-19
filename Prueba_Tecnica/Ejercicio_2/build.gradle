@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+}
+
+defaultTasks 'clean', 'test'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    karate_version = '1.5.2'
+    junit_version = '5.11.4'
+}
+
+dependencies {
+    testImplementation "io.karatelabs:karate-junit5:${karate_version}"
+    testImplementation "org.junit.jupiter:junit-jupiter:${junit_version}"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+// Karate mantiene los .feature junto a las clases Java: se exponen como recursos.
+sourceSets {
+    test {
+        resources {
+            srcDir file('src/test/java')
+            exclude '**/*.java'
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+    defaultCharacterEncoding = 'UTF-8'
+    outputs.upToDateWhen { false }
+    testLogging {
+        events 'passed', 'failed'
+        showStandardStreams = true
+    }
+}
+
+clean {
+    delete 'Reporte_Final'
+}
