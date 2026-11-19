@@ -1,0 +1,59 @@
+Conclusiones del Ejercicio 1 – Script de Pruebas de Carga
+====================================================
+
+1. Configuración ejecutada
+- Fecha de ejecución: 19/11/2026
+- Versión de k6: v2.4.0
+- Escenario: 25 TPS constantes durante 5 minutos
+- Total de peticiones: 7500
+
+----------------------------------------------------
+
+2. Resultados
+| Métrica                   | Objetivo     | Obtenido  | Cumple |
+|---------------------------|--------------|-----------|--------|
+| Throughput (http_reqs/s)  | >= 20 TPS    | 24,97/s   |   Si   |
+| Tiempo respuesta p(95)    | < 1500 ms    | 453,79ms  |   Si   |
+| Tiempo respuesta promedio | -            | 408,99ms  | -      |
+| Tiempo respuesta máximo   | -            | 3027,78ms | -      |
+| Tasa de error             | < 3 %        | 0%        |   Si   |
+| Iteraciones descartadas   | 0            | 0         |   Si   |
+
+----------------------------------------------------
+
+3. Hallazgos
+- Tiempos recopilados: p95 de 453,79 ms contra un límite de 1500, es decir unas 3,3 veces de margen.
+Promedio de 408,99 ms y mediana de 399,16 ms, una distribución muy pareja.
+- Errores encontrados: 0 de 7500, todas con 201 y token.
+- Throughput y VUs: 24,97 TPS con un objetivo de 25. Se usaron de 10 a 14 VUs de 50, coincide con TPS × latencia ≈ 10.
+- Prueba de 3 TPS: 91 peticiones y exit 99 por el threshold de TPS, el cuál detectó que no llegaba a 20 TPS.
+
+----------------------------------------------------
+
+4. Conclusiones
+- El login cumple los criterios con 25 TPS sostenidos durante 5 minutos: 0 % de errores, p95 de 453,79 ms y 24,97 TPS. 
+Los cuatro thresholds quedaron aprobados.
+
+- La respuesta se mantuvo estable, el promedio rondó los 400 ms durante la prueba, sin mostrar tendencia a empeorar,
+y se usaron entre 10 y 14 VUs de 50, sin iteraciones descartadas. No hubo señales de saturación a esta carga.
+
+- Casi todo el tiempo es espera del servidor: 408,36 ms de los 408,99 ms de promedio. La conexión y el TLS solo pesan
+en las primeras peticiones (máx. 15,5 y 32 ms); después se reutiliza la conexión. Con esta prueba no se puede separar 
+cuánto es red y cuánto es procesamiento del servidor.
+
+- Sobre el criterio de 1,5 s: 6 de 7500 peticiones (0,08 %) lo superaron, con un máximo de 3,03 s. No afectan al p95 
+(453,79 ms) ni al p99 (cerca de 495 ms según el dashboard), por eso se tomó el p95 como criterio de validación. 
+Con una lectura estricta de "máximo 1,5 segundos", esas 6 no cumplirían. Los reportes no permiten saber cuándo ni con
+qué usuario ocurrieron.
+
+----------------------------------------------------
+
+5. Limitaciones y recomendaciones
+- Se probó un servicio público de terceros, desde una sola computadora y una sola red, en una única corrida de 5 minutos; los 
+los tiempos pueden variar entre ejecuciones.
+
+- Solo se probaron 25 TPS con 5 usuarios, así que no se conoce el límite del servicio ni cómo responde con más 
+usuarios distintos.
+
+- Para investigar las 6 respuestas lentas habría que repetir la prueba registrando hora y usuario de cada petición 
+que pase de 1,5 s. Para ubicar el límite, subir los TPS de forma escalonada.
